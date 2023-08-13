@@ -17,6 +17,10 @@ jobs:
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - run: echo "Running the script to build the Noteflow application."
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
       - run: |
           ./buildNoteflowApp.sh
           
