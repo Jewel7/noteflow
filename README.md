@@ -10,7 +10,7 @@
   The user can then answer the question as the
   responder.
 - Users have the abilty to edit both the questions and responses once they have been submitted to the conversation.
-- Only one question can be submitted at a time, but multiple responses can answer that question.
+- Only one question can be submitted at a time in a conversation, but multiple responses can answer that question.
 - Users can maintain multiple conversations, which can function as different topics.
   For example, conversations may be labeled "Biology Notes," "Chemistry Lecture," "New York Trip 2023."
 
