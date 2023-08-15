@@ -13,7 +13,26 @@
 - Only one question can be submitted at a time in a conversation, but multiple responses can answer that question.
 - Users can maintain multiple conversations, which can function as different topics.
   For example, conversations may be labeled "Biology Notes," "Chemistry Lecture," "New York Trip 2023."
+- Users can search for conversations. Within conversations, users can search specific questions and responses.
 
+  
 ## Endpoints
 
 - 
+
+## Data Transfer Object Models
+```json
+{
+	"questions": [{
+		"questionId": 1,
+		"questionTitle": "",
+		"tags": ["", "", ""],
+		"responses": [{
+			"responseId": 1,
+			"responseText": "",
+			"responseLink": ["", "", ""]
+		}]
+
+	}]
+}
+```
