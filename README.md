@@ -36,3 +36,7 @@
 	}]
 }
 ```
+
+## Running the environment
+docker build --build-arg "JAR_FILE=target/*.jar" -t noteflow .
+./start.sh
