@@ -1,65 +1,44 @@
 services:
+  noteflow:
+    build:
+      context: .
+    ports:
+      - 8080:8080
   redis-cluster-node1:
     image: redis:alpine
-    command: redis-server /usr/local/etc/redis/redis.conf
-    networks:
-      - redis-network
-    ports:
-      - 9081:6379
+    command: redis-server /usr/local/etc/redis/redis_node.conf
     volumes:
       - ./redis_conf:/usr/local/etc/redis
   redis-cluster-node2:
     image: redis:alpine
-    command: redis-server /usr/local/etc/redis/redis.conf
-    networks:
-      - redis-network
-    ports:
-      - 9082:6379
+    command: redis-server /usr/local/etc/redis/redis_node.conf
     volumes:
       - ./redis_conf:/usr/local/etc/redis
   redis-cluster-node3:
     image: redis:alpine
-    command: redis-server /usr/local/etc/redis/redis.conf
-    networks:
-      - redis-network
-    ports:
-      - 9083:6379
+    command: redis-server /usr/local/etc/redis/redis_node.conf
     volumes:
       - ./redis_conf:/usr/local/etc/redis
   redis-cluster-node4:
     image: redis:alpine
-    command: redis-server /usr/local/etc/redis/redis.conf
-    networks:
-      - redis-network
-    ports:
-      - 9084:6379
+    command: redis-server /usr/local/etc/redis/redis_node.conf
     volumes:
       - ./redis_conf:/usr/local/etc/redis
   redis-cluster-node5:
     image: redis:alpine
-    command: redis-server /usr/local/etc/redis/redis.conf
-    networks:
-      - redis-network
-    ports:
-      - 9085:6379
+    command: redis-server /usr/local/etc/redis/redis_node.conf
     volumes:
       - ./redis_conf:/usr/local/etc/redis
   redis-cluster-node6:
     image: redis:alpine
-    command: redis-server /usr/local/etc/redis/redis.conf
-    networks:
-      - redis-network
-    ports:
-      - 9086:6379
+    command: redis-server /usr/local/etc/redis/redis_node.conf
     volumes:
       - ./redis_conf:/usr/local/etc/redis
   redis-cluster-configure:
     image: redis:alpine
     command: /usr/local/etc/redis/redis-cluster-create.sh
-    networks:
-      - redis-network
     depends_on:
-      #6 nodes and 3 masters are required for Redis cluster
+      #6 nodes and 3 masters are required for a Redis cluster
       - redis-cluster-node1
       - redis-cluster-node2
       - redis-cluster-node3
@@ -68,6 +47,3 @@ services:
       - redis-cluster-node6
     volumes:
       - ./redis_conf:/usr/local/etc/redis
-networks:
-  redis-network:
-    driver: bridge

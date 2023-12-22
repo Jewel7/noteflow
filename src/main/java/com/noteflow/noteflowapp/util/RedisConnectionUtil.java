@@ -15,7 +15,7 @@ public class RedisConnectionUtil {
     private static final RedisConnectionUtil instance = new RedisConnectionUtil();
 
     @Value("${noteflow.redis.host}")
-    private String host;
+    private List<String> hosts;
 
     @Value("${noteflow.redis.cluster.node.ports}")
     private List<Integer> ports;
@@ -35,18 +35,23 @@ public class RedisConnectionUtil {
         try {
             // Add nodes to Jedis Cluster
             Set<HostAndPort> jedisClusterNodes = new HashSet<>();
-            ports.forEach(port -> jedisClusterNodes.add(new HostAndPort(host, port)));
+
+            for (int i = 0; i < hosts.size(); i++) {
+                jedisClusterNodes.add(new HostAndPort(hosts.get(i), ports.get(i)));
+            }
 
             // --- SANITY CHECK: printing out the nodes in the cluster
-            jedisClusterNodes.forEach(System.out::println);
+            log.info("************************************************************");
             log.info("Trying to connect to JedisCluster nodes in Docker container");
+            jedisClusterNodes.forEach(System.out::println);
 
             // Instantiate the connection to the Jedis Cluster
             this.jedisCluster = new JedisCluster(jedisClusterNodes);
-            this.jedisCluster.set("lokiPaws", "hello");
 
             // --- SANITY CHECK: printing out successful connections to each node
-            ports.forEach(port -> log.info("CONNECTED to port {} and host {}", port, host));
+            for (int i = 0; i < hosts.size(); i++) {
+                log.info("CONNECTED to port {} and host {}", ports.get(i), hosts.get(i));
+            }
         } catch (Exception e) {
             log.error(e.getMessage());
             e.printStackTrace();
@@ -54,7 +59,7 @@ public class RedisConnectionUtil {
     }
 
     public void write() {
-        this.jedisCluster.set("lokiPaws", "hello");
+        this.jedisCluster.set("lokisPaws", "hello");
 
     }
 
