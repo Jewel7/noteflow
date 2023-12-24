@@ -4,5 +4,5 @@ import com.noteflow.noteflowapp.models.Conversation;
 import org.springframework.data.repository.CrudRepository;
 
 
-public interface ConversationRepository extends CrudRepository<Conversation, Integer> {
+public interface ConversationRepository extends CrudRepository<Conversation, String> {
 }

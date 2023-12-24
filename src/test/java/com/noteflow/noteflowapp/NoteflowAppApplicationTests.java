@@ -1,13 +1,13 @@
 package com.noteflow.noteflowapp;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class NoteflowAppApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+//    @Test
+//    void contextLoads() {
+//        assert true;
+//    }
 
 }

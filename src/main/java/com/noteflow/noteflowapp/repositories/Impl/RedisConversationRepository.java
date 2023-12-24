@@ -2,14 +2,26 @@ package com.noteflow.noteflowapp.repositories.Impl;
 
 import com.noteflow.noteflowapp.models.Conversation;
 import com.noteflow.noteflowapp.repositories.ConversationRepository;
+import com.noteflow.noteflowapp.util.RedisConnectionUtil;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
 public class RedisConversationRepository implements ConversationRepository {
+
+    RedisConnectionUtil redisConnectionUtil;
+
+    //constructor injection is the preferred method for spring DI
+    public RedisConversationRepository(RedisConnectionUtil redisConnectionUtil) {
+        this.redisConnectionUtil = redisConnectionUtil;
+    }
+
     @Override
     public <S extends Conversation> S save(S entity) {
+        String entityString = entity.toString();
+        String entityID = entity.getId().toString();
+        redisConnectionUtil.write(entityID, entityString);
         return null;
     }
 
@@ -19,12 +31,13 @@ public class RedisConversationRepository implements ConversationRepository {
     }
 
     @Override
-    public Optional<Conversation> findById(Integer integer) {
+    public Optional<Conversation> findById(String id) {
+        redisConnectionUtil.read(id);
         return Optional.empty();
     }
 
     @Override
-    public boolean existsById(Integer integer) {
+    public boolean existsById(String s) {
         return false;
     }
 
@@ -34,7 +47,7 @@ public class RedisConversationRepository implements ConversationRepository {
     }
 
     @Override
-    public Iterable<Conversation> findAllById(Iterable<Integer> integers) {
+    public Iterable<Conversation> findAllById(Iterable<String> strings) {
         return null;
     }
 
@@ -44,7 +57,7 @@ public class RedisConversationRepository implements ConversationRepository {
     }
 
     @Override
-    public void deleteById(Integer integer) {
+    public void deleteById(String s) {
 
     }
 
@@ -54,7 +67,7 @@ public class RedisConversationRepository implements ConversationRepository {
     }
 
     @Override
-    public void deleteAllById(Iterable<? extends Integer> integers) {
+    public void deleteAllById(Iterable<? extends String> strings) {
 
     }
 
@@ -67,4 +80,6 @@ public class RedisConversationRepository implements ConversationRepository {
     public void deleteAll() {
 
     }
+
+
 }

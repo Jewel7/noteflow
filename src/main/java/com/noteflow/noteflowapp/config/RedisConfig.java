@@ -9,7 +9,9 @@ import org.springframework.context.annotation.Configuration;
 public class RedisConfig {
 
     // uses the Singleton pattern
-    //tells Spring to manage the only Redis instance available
+    // tells Spring to manage the only Redis instance available
+    // we only have one instance because every time we create an instance, we connect to the cluster
+    // we only want to connect to the cluster once because it takes up a lot of memory and network IO
     @Bean
     public RedisConnectionUtil redisConnectionUtil() {
         return RedisConnectionUtil.getInstance();

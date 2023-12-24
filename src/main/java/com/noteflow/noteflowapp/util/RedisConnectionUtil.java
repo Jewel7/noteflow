@@ -1,5 +1,6 @@
 package com.noteflow.noteflowapp.util;
 
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import redis.clients.jedis.HostAndPort;
@@ -11,18 +12,25 @@ import java.util.Set;
 
 @Slf4j
 public class RedisConnectionUtil {
+
+    //  *** USING THE SINGLETON PATTERN ***
     // makes the single instance of the class
+    // the variable holds an instance but is not actually tied to any instance (static variable)
+    // this static variable gets created when the
     private static final RedisConnectionUtil instance = new RedisConnectionUtil();
-
-    @Value("${noteflow.redis.host}")
+    private Boolean isConnected = false;
+    @Value("${noteflow.redis.hosts}")
     private List<String> hosts;
-
     @Value("${noteflow.redis.cluster.node.ports}")
     private List<Integer> ports;
     private JedisCluster jedisCluster;
 
-    // *** Using the Singleton pattern ***
-    // prevents you from making instances of the class
+    // make the constructor private to prevent you from making new instances of the class
+    // IMPORTANT: do not run connect() method in the constructor. When the constructor gets called, the instance
+    // variables are still in the process of getting initialized, so they will not return any values in them. Thus
+    // when you run the connect() method and it uses those instance variables, it will say that the variables are empty.
+    // Better solution is to use @PostConstruct, which runs anything right after the bean and any constructors
+    // are initialized (the instance variable will have values in them)
     private RedisConnectionUtil() {
     }
 
@@ -31,7 +39,17 @@ public class RedisConnectionUtil {
         return instance;
     }
 
-    public void connect() {
+    //runs after the bean is initialized and the instance is created
+    @PostConstruct
+    public static void init() {
+        if (!instance.isConnected) {
+            instance.connect();
+            instance.isConnected = true;
+        }
+    }
+
+    //making this private so we can ensure only the class calls it and calls it once
+    private void connect() {
         try {
             // Add nodes to Jedis Cluster
             Set<HostAndPort> jedisClusterNodes = new HashSet<>();
@@ -55,15 +73,16 @@ public class RedisConnectionUtil {
         } catch (Exception e) {
             log.error(e.getMessage());
             e.printStackTrace();
+            throw e;
         }
     }
 
-    public void write() {
-        this.jedisCluster.set("lokisPaws", "hello");
-
+    public void write(String entityID, String value) {
+        this.jedisCluster.set(entityID, value);
     }
 
-    public void read() {
-        System.out.println(jedisCluster.get("lokisPaws"));
+    public void read(String key) {
+        String k = this.jedisCluster.get(key);
+        log.info(k);
     }
 }

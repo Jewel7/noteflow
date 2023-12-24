@@ -4,6 +4,9 @@ services:
       context: .
     ports:
       - 8080:8080
+    #   @postconstruct will cause noteflow to fail until the redis nodes start
+    #    restart:always forces app to keep trying to restart until they're up
+    restart: always
   redis-cluster-node1:
     image: redis:alpine
     command: redis-server /usr/local/etc/redis/redis_node.conf
@@ -38,7 +41,8 @@ services:
     image: redis:alpine
     command: /usr/local/etc/redis/redis-cluster-create.sh
     depends_on:
-      #6 nodes and 3 masters are required for a Redis cluster
+      # 6 nodes and 3 masters are required for a Redis cluster
+      # the container doesn't run the script until all 6 nodes are up
       - redis-cluster-node1
       - redis-cluster-node2
       - redis-cluster-node3
