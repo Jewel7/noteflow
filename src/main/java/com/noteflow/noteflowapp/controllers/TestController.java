@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @Slf4j
 @RestController
 public class TestController {
@@ -27,8 +29,19 @@ public class TestController {
     @GetMapping("/redisTest")
     public void rediTest() {
         Conversation conversation = new Conversation("title1");
+
+        //write
         conversationRepository.save(conversation);
-        conversationRepository.findById(conversation.getId().toString());
+
+        //read
+        Optional<Conversation> result = conversationRepository.findById(conversation.getId().toString());
+        String resultString = result.toString();
+        log.info("Reading the conversation: " + resultString);
+
+        //delete
+        conversationRepository.deleteById(conversation.getId().toString());
+        //verify deletion
+        log.info("Trying to get deleted key: " + conversationRepository.findById(conversation.getId().toString()));
 
     }
 

@@ -16,8 +16,10 @@ public class RedisConnectionUtil {
     //  *** USING THE SINGLETON PATTERN ***
     // makes the single instance of the class
     // the variable holds an instance but is not actually tied to any instance (static variable)
-    // this static variable gets created when the
+    // this static variable gets created immediately
     private static final RedisConnectionUtil instance = new RedisConnectionUtil();
+
+    // instance variables
     private Boolean isConnected = false;
     @Value("${noteflow.redis.hosts}")
     private List<String> hosts;
@@ -30,7 +32,7 @@ public class RedisConnectionUtil {
     // variables are still in the process of getting initialized, so they will not return any values in them. Thus
     // when you run the connect() method and it uses those instance variables, it will say that the variables are empty.
     // Better solution is to use @PostConstruct, which runs anything right after the bean and any constructors
-    // are initialized (the instance variable will have values in them)
+    // are initialized (thus the instance variable will have values in them)
     private RedisConnectionUtil() {
     }
 
@@ -64,7 +66,7 @@ public class RedisConnectionUtil {
             jedisClusterNodes.forEach(System.out::println);
 
             // Instantiate the connection to the Jedis Cluster
-            this.jedisCluster = new JedisCluster(jedisClusterNodes);
+            jedisCluster = new JedisCluster(jedisClusterNodes);
 
             // --- SANITY CHECK: printing out successful connections to each node
             for (int i = 0; i < hosts.size(); i++) {
@@ -77,12 +79,17 @@ public class RedisConnectionUtil {
         }
     }
 
-    public void write(String entityID, String value) {
-        this.jedisCluster.set(entityID, value);
+    public String read(String key) {
+        return jedisCluster.get(key);
     }
 
-    public void read(String key) {
-        String k = this.jedisCluster.get(key);
-        log.info(k);
+    public void write(String key, String value) {
+        jedisCluster.set(key, value);
     }
+
+    public void delete(String key) {
+        jedisCluster.del(key);
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.noteflow.noteflowapp.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ public class Conversation {
     private UUID id;
     private LocalDateTime timestamp;
 
-    public Conversation(String title) {
+    public Conversation(@JsonProperty("title") String title) {
         this.title = title;
         this.id = UUID.randomUUID();
         timestamp = LocalDateTime.now();
